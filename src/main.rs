@@ -32,6 +32,7 @@ fn main() -> Result<(), io::Error> {
 
     let video_conversion_output = Command::new("ffmpeg")
         .args([
+            "-y",
             "-i",
             video_filepath,
             "-filter:v",
@@ -75,5 +76,6 @@ fn main() -> Result<(), io::Error> {
         gameloop::sleep_fps(FPS, Some(elapsed));
     }
 
+    let _ = fs::remove_dir_all("frames/");
     Ok(())
 }
