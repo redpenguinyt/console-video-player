@@ -1,6 +1,6 @@
 use gemini_engine::elements::{
     view::{ColChar, Modifier, View, Wrapping},
-    Vec2D, PixelContainer,
+    PixelContainer, Vec2D,
 };
 use image::{imageops::FilterType, DynamicImage};
 
@@ -31,10 +31,8 @@ pub fn blit_image_to(view: &mut View, img: DynamicImage, pixel_char: char, wrapp
             },
         );
 
-        let wide_pixel = PixelContainer::from(vec![
-            (pos, colour),
-            (pos + Vec2D::new(1, 0), colour),
-        ]);
+        let wide_pixel =
+            PixelContainer::from(vec![(pos, colour), (pos + Vec2D::new(1, 0), colour)]);
 
         view.blit(&wide_pixel, wrapping);
     }
