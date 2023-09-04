@@ -1,10 +1,10 @@
 [package]
-name = "video_player"
+name = "gemini-video-player"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-gemini-engine = { path = "../gemini-rust/gemini" }
+gemini-engine = "0.3.0"
 image = "0.24.7"
