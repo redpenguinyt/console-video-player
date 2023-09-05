@@ -8,7 +8,7 @@ use image::io::Reader as ImageReader;
 const WIDTH: u32 = 350;
 const HEIGHT: u32 = 90;
 const FPS: u32 = 20;
-const PIXEL_CHAR: char = 'E';
+const PIXEL_CHAR: char = ColChar::SOLID.fill_char;
 
 fn main() -> Result<(), io::Error> {
     let args: Vec<String> = env::args().collect();
@@ -62,18 +62,20 @@ fn main() -> Result<(), io::Error> {
     println!();
 
     let mut view = View::new(video_width * 2, video_height, ColChar::EMPTY);
-
+    let mut frame_skip = false;
     for img in frames {
         let now = gameloop::Instant::now();
         view.clear();
 
-        frame::blit_image_to(&mut view, img, PIXEL_CHAR, Wrapping::Ignore);
-        view.display_render().unwrap();
+        if !frame_skip {
+            frame::blit_image_to(&mut view, img, PIXEL_CHAR, Wrapping::Ignore);
+            view.display_render().unwrap();
+        }
 
         let elapsed = now.elapsed();
         println!("Elapsed: {}µs", elapsed.as_micros());
 
-        gameloop::sleep_fps(FPS, Some(elapsed));
+        frame_skip = gameloop::sleep_fps(FPS, Some(elapsed));
     }
 
     let _ = fs::remove_dir_all("frames/");
