@@ -24,11 +24,7 @@ pub fn blit_image_to(view: &mut View, img: DynamicImage, pixel_char: char, wrapp
         );
         let colour = ColChar::new(
             pixel_char,
-            Modifier::Colour {
-                r: pixel.0[0],
-                g: pixel.0[1],
-                b: pixel.0[2],
-            },
+            Modifier::from_rgb(pixel.0[0], pixel.0[1], pixel.0[2]),
         );
 
         let wide_pixel =
