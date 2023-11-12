@@ -49,9 +49,7 @@ pub struct Video {
 
 impl Video {
     pub fn new(width: u32, height: u32, fps: f32, video_file_path: &str) -> io::Result<Self> {
-        if let Err(e) = generate_frames(video_file_path, fps) {
-            return Err(e);
-        }
+        generate_frames(video_file_path, fps)?;
 
         // load frames
         let (mut video_width, mut video_height) = (0, 0);
