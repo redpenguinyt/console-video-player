@@ -6,7 +6,7 @@ use std::{env, fs, io, process};
 const WIDTH: u32 = 350;
 const HEIGHT: u32 = 90;
 const FPS: f32 = 60.0;
-const PIXEL_CHAR: char = ColChar::SOLID.fill_char;
+const PIXEL_CHAR: char = ColChar::SOLID.text_char;
 
 fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();

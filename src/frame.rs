@@ -28,7 +28,7 @@ pub fn blit_image_to(view: &mut View, img: DynamicImage, pixel_char: char, wrapp
         );
 
         let wide_pixel =
-            PixelContainer::from(vec![(pos, colour), (pos + Vec2D::new(1, 0), colour)]);
+            PixelContainer::from(&vec![(pos, colour), (pos + Vec2D::new(1, 0), colour)][..]);
 
         view.blit(&wide_pixel, wrapping);
     }
