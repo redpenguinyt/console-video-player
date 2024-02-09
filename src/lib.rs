@@ -1,6 +1,11 @@
 pub mod frame;
 use image::{io::Reader as ImageReader, DynamicImage};
-use std::{fs, io, process::Command};
+use std::{
+    ffi::OsString,
+    fs::{self, DirEntry},
+    io,
+    process::Command,
+};
 
 pub fn get_video_filepath(args: &[String]) -> io::Result<&str> {
     if args.len() != 2 {
@@ -32,7 +37,7 @@ pub fn generate_frames(video_file_path: &str, video_fps: f32) -> io::Result<()> 
             video_file_path,
             "-filter:v",
             format!("fps=fps={}", video_fps).as_str(), // FPS
-            "frames/frame_%0d.png",
+            "frames/frame_%6d.png",
         ])
         .output()?;
     println!("ffmpeg status: {}", video_conversion_output.status);
@@ -54,10 +59,16 @@ impl Video {
         // load frames
         let (mut video_width, mut video_height) = (0, 0);
 
-        let frames_dir = fs::read_dir("frames/")?;
+        let mut frame_files: Vec<io::Result<DirEntry>> = fs::read_dir("frames/")?.collect();
+
+        frame_files.sort_by_key(|f| match f {
+            Ok(file) => file.file_name(),
+            Err(_) => OsString::default(),
+        });
+
         let mut frames = vec![];
-        let frame_count = fs::read_dir("frames/")?.count();
-        for (i, item_result) in frames_dir.enumerate() {
+        let frame_count = frames.len();
+        for (i, item_result) in frame_files.into_iter().enumerate() {
             let frame_path = item_result?.path();
             let frame_path = frame_path.to_str().unwrap();
 
