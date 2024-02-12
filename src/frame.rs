@@ -4,7 +4,7 @@ use gemini_engine::elements::{
 };
 use image::{imageops::FilterType, DynamicImage};
 
-pub fn resized_img_and_size(
+#[must_use] pub fn resized_img_and_size(
     img: DynamicImage,
     width: u32,
     height: u32,

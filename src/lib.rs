@@ -36,7 +36,7 @@ pub fn generate_frames(video_file_path: &str, video_fps: f32) -> io::Result<()> 
             "-i",
             video_file_path,
             "-filter:v",
-            format!("fps=fps={}", video_fps).as_str(), // FPS
+            format!("fps=fps={video_fps}").as_str(), // FPS
             "frames/frame_%6d.png",
         ])
         .output()?;
