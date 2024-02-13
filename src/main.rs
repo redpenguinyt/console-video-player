@@ -27,8 +27,8 @@ fn main() -> io::Result<()> {
         view.clear();
 
         if !frame_skip {
-            frame::blit_image_to(&mut view, img, PIXEL_CHAR, Wrapping::Ignore);
-            view.display_render().unwrap();
+            frame::blit_image_to(&mut view, &img, PIXEL_CHAR, Wrapping::Ignore);
+            view.display_render()?;
         }
 
         let elapsed = now.elapsed();
@@ -37,6 +37,7 @@ fn main() -> io::Result<()> {
         frame_skip = gameloop::sleep_fps(scaled_video.fps, Some(elapsed));
     }
 
-    let _ = fs::remove_dir_all("frames/");
+    fs::remove_dir_all("frames/")?;
+
     Ok(())
 }

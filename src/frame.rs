@@ -6,7 +6,7 @@ use image::{imageops::FilterType, DynamicImage};
 
 #[must_use]
 pub fn resized_img_and_size(
-    img: DynamicImage,
+    img: &DynamicImage,
     width: u32,
     height: u32,
 ) -> (DynamicImage, usize, usize) {

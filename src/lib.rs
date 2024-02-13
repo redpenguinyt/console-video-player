@@ -36,7 +36,7 @@ pub fn get_video_filepath(args: &[String]) -> io::Result<&str> {
 /// Will panic if ffmpeg fails to be called
 pub fn generate_frames(video_file_path: &str, video_fps: f32) -> io::Result<()> {
     let _ = fs::remove_dir_all("frames/");
-    fs::create_dir_all("frames/").unwrap();
+    fs::create_dir_all("frames/")?;
 
     let video_conversion_output = Command::new("ffmpeg")
         .args([
@@ -47,7 +47,8 @@ pub fn generate_frames(video_file_path: &str, video_fps: f32) -> io::Result<()> 
             format!("fps=fps={video_fps}").as_str(), // FPS
             "frames/frame_%6d.png",
         ])
-        .output()?;
+        .output()
+        .expect("Failed to execute ffmpeg");
     println!("ffmpeg status: {}", video_conversion_output.status);
 
     Ok(())
@@ -82,19 +83,21 @@ impl Video {
 
         let mut frame_files: Vec<io::Result<DirEntry>> = fs::read_dir("frames/")?.collect();
 
-        frame_files.sort_by_key(|f| match f {
-            Ok(file) => file.file_name(),
-            Err(_) => OsString::default(),
+        frame_files.sort_by_key(|f| {
+            f.as_ref()
+                .map_or_else(|_| OsString::default(), DirEntry::file_name)
         });
 
         let mut frames = vec![];
         let frame_count = frames.len();
         for (i, item_result) in frame_files.into_iter().enumerate() {
             let frame_path = item_result?.path();
-            let frame_path = frame_path.to_str().unwrap();
+            let frame_path = frame_path.to_str().expect("Path is not valid unicode");
 
-            let mut img = ImageReader::open(frame_path)?.decode().unwrap();
-            (img, video_width, video_height) = frame::resized_img_and_size(img, width, height);
+            let mut img = ImageReader::open(frame_path)?
+                .decode()
+                .expect("Could not determine format");
+            (img, video_width, video_height) = frame::resized_img_and_size(&img, width, height);
             frames.push(img);
 
             print!("loading frame {i}/{frame_count}\r");
