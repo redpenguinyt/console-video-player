@@ -17,8 +17,11 @@ pub fn resized_img_and_size(
     (resized_img, width, height)
 }
 
-pub fn blit_image_to(view: &mut View, img: DynamicImage, pixel_char: char, wrapping: Wrapping) {
-    for (i, pixel) in img.as_rgb8().unwrap().pixels().enumerate() {
+/// Display the image on the given view
+/// # Panics
+/// Will panic if it can't get RGB8 Image data from the given `DynamicImage`
+pub fn blit_image_to(view: &mut View, img: &DynamicImage, pixel_char: char, wrapping: Wrapping) {
+    for (i, pixel) in img.as_rgb8().expect("No RGB8 image data found").pixels().enumerate() {
         let pos = Vec2D::new(
             i.rem_euclid(img.width() as usize) as isize * 2,
             (i / img.width() as usize) as isize,

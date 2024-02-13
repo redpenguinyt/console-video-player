@@ -7,6 +7,8 @@ use std::{
     process::Command,
 };
 
+/// # Errors
+/// Returns an error if exactly one argument is not submitted
 pub fn get_video_filepath(args: &[String]) -> io::Result<&str> {
     if args.len() != 2 {
         return Err(io::Error::new(
@@ -25,8 +27,14 @@ pub fn get_video_filepath(args: &[String]) -> io::Result<&str> {
     Ok(video_file_path)
 }
 
+/// Generate frames for a video file
+///
+/// # Errors
+/// Failure to create a `frames/` directory will result in error
+///
+/// # Panics
+/// Will panic if ffmpeg fails to be called
 pub fn generate_frames(video_file_path: &str, video_fps: f32) -> io::Result<()> {
-    // convert video to image files
     let _ = fs::remove_dir_all("frames/");
     fs::create_dir_all("frames/").unwrap();
 
@@ -53,6 +61,19 @@ pub struct Video {
 }
 
 impl Video {
+    /// Generates a new video along with frames in a new frames directory
+    ///
+    /// # Errors
+    /// Will return:
+    /// - Errors from [`generate_frames()`]
+    /// - `frames/` read directory errors
+    /// - Errors from reading the directory entries
+    /// - Errors from opening the file as an `ImageReader`
+    ///
+    /// # Panics
+    /// Will panic if:
+    /// - The path is not valid Unicode
+    /// - `ImageReader` is unable to determine the image format created by `ffmpeg`
     pub fn new(width: u32, height: u32, fps: f32, video_file_path: &str) -> io::Result<Self> {
         generate_frames(video_file_path, fps)?;
 
