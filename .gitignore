@@ -1,4 +1,4 @@
 target/*
 frames/*
 Cargo.lock
-video.mp4
+video*
